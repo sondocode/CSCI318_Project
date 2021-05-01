@@ -1,0 +1,383 @@
+<html lang="en">
+<%- include("./partials/head.ejs") %>
+
+<body style="background-image: linear-gradient(to bottom left, white, white);">
+  <%- include("./partials/nav.ejs") %>
+
+  <div>
+    <form method="POST" action="/" enctype="multipart/form-data" onsubmit="return validateMyForm();">
+      <p class="selectDataSetPara" style="font-size:30px;"> 
+        <b> 
+          Select your data set:&nbsp;&nbsp;
+        </b>
+        
+      </p>
+
+      <p class="myFileContainer">
+        <input style="border-radius: 5%; " class="myFile" type="file" id="data_set" name="data_set" value="" />
+      </p>
+
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <p class="displayButtonContainer">
+        <input style="padding: 12px 45px; margin-left: 2% " class="displayButton" type="submit" id="btn_display"
+          name="btn_display" value="Display" />
+      </p>
+    </form>
+  </div>
+  <table id="tableEntry" class="table table-bordered">
+    <tr>
+      <td style="width: 50%;">By <strong>State</strong>:</td>
+      <td><select class="select-css" name="state" id="state">
+          <option id="defaultO">---</option>
+          <option value="Perlis">Perlis</option>
+          <option value="Kedah">Kedah</option>
+          <option value="Pulau Pinang">Pulau Pinang</option>
+          <option value="Perak">Perak</option>
+          <option value="Selangor">Selangor</option>
+          <option value="Kuala Lumpur">Kuala Lumpur</option>
+          <option value="Putrajaya">Putrajaya</option>
+          <option value="Negeri Sembilan">Negeri Sembilan</option>
+          <option value="Melaka">Melaka</option>
+          <option value="Johor">Johor</option>
+          <option value="Pahang">Pahang</option>
+          <option value="Terengganu">Terengganu</option>
+          <option value="Kelantan">Kelantan</option>
+          <option value="Sabah">Sabah</option>
+          <option value="Labuan">Labuan</option>
+          <option value="Sarawak">Sarawak</option>
+        </select></td>
+    </tr>
+    <tr>
+      <td>By <strong>Hospital Category</strong>:</td>
+      <td>
+        <select class="select-css" name="category" id="category">
+          <option>---</option>
+          <option value="Hospital Negeri">Hospital Negeri</option>
+          <option value="Hospital Pakar Major">Hospital Pakar Major</option>
+          <option value="Hospital Tanpa Pakar">Hospital Tanpa Pakar</option>
+          <option value="Hospital Pakar Minor">Hospital Pakar Minor</option>
+          <option value="Institusi Perubatan Khas">
+            Institusi Perubatan Khas
+          </option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>By <strong>Total</strong>: </td>
+      <td>
+        <select class="select-css" name="totaL" id="totaL">
+          <option>---</option>
+          <option value="Total">Total each state</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td rowspan="2">By <strong>Number Of Offical Beds</strong>: </td>
+      <td>
+        <input id="noBeds" class="searchInput" name="noBeds" type="number" placeholder="Enter start range (e.g 100)"
+          style="background-image: none" min="0" max="5500" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input id="noBeds2" class="searchInput" name="noBeds2" type="number" placeholder="Enter end range (e.g 300)"
+          style="background-image: none" min="0" max="5500" />
+      </td>
+    </tr>
+    <tr>
+      <td rowspan="2">By <strong>Bed Usage Rate</strong>: </td>
+      <td>
+        <input id="rate" class="searchInput" name="rate" type="number" placeholder="Enter start range (e.g 22.5)"
+          style="background-image: none" min="0" max="110" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input id="rate2" class="searchInput" name="rate2" type="number" placeholder="Enter end range (e.g 88)"
+          style="background-image: none" min="0" max="110" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input style="padding: 12px 50px; margin-left: 5%" type="button" class="myButton" id="filter" name="filter"
+          onclick="filterFunction()" value="Filter" />
+        <input style="padding: 12px 50px; margin-left: 5%" type="button" class="myButton" id="clear" name="clear"
+          onclick="clearFunction()" value="Clear" />
+      </td>
+      <td>
+        <input style="padding: 12px 40px; margin-left: 5%" class="myButton" type="reset" id="resetT" name="resetT"
+          value="Show All" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input id="search" class="searchInput" name="search" type="text" placeholder="Search By Hospital Name.." />
+      </td>
+      <td>
+        <input class="myButton" type="submit" id="btn_search" name="btn_search" value="Search"
+          style="padding: 12px 45px; margin-left: 5%" onclick="searchFunction()" />
+      </td>
+    </tr>
+  </table>
+
+  <a id="back-to-top" href="#" class="btn btn-primary btn-lg back-to-top" role="button" data-toggle="tooltip"
+    data-placement="left"><span class="glyphicon glyphicon-chevron-up"></span></a>
+  </div>
+
+  <div class="data_content">
+    <h2>Display data</h2>
+    <% if (staticdatas.length > 0 && title == 'Show Data' ) { %>
+    <table id="customers" class="table table-bordered">
+      <% for (i in staticdatas) { %>
+      <tr>
+        <% for (j in staticdatas[i]) { %> <% if (i==0 || i ==
+          staticdatas.length-1 || staticdatas[i][0] == "Total" ) { %>
+        <th><%= staticdatas[i][j] %></th>
+        <% } else { %> 
+        <td><%= staticdatas[i][j] %></td>
+        <% }} %>
+      </tr>
+      <% } %>
+    </table>
+
+    <% } else { %>
+    <p>There is no data to display...</p>
+    <% } %>
+  </div>
+
+  <%- include("./partials/footer.ejs") %>
+
+  <script>
+    var tRows = [];
+
+    if (document.title == "Teh Tarik | Show Data") {
+      $(document).ready(function () {
+        tab = document.getElementById("customers");
+
+        for (var r = 0; r < tab.rows.length; r++) {
+          var tRow = []; // start new row array
+          for (var c = 0; c < tab.rows[r].cells.length; c++) {
+            tRow[c] = tab.rows[r].cells[c].innerHTML;
+          }
+          tRows.push(tRow);
+        }
+      });
+    }
+
+    document.getElementById("resetT").onclick = function () {
+      document.getElementById("customers").innerHTML = "";
+      var tableContent = "";
+
+      for (i in tRows) {
+        tableContent += "<tr>";
+        for (j in tRows[i]) {
+          if (i == 0 || i == tRows.length - 1 || tRows[i][0] == "Total") {
+            tableContent += "<th>" + tRows[i][j] + "</th>";
+          } else {
+            tableContent += "<td>" + tRows[i][j] + "</td>";
+          }
+        }
+        tableContent += "</tr>";
+      }
+      document.getElementById("customers").innerHTML = tableContent;
+    };
+
+    function filterFunction() {
+      var validate;
+      if (
+        $("#state").val() == "---" &&
+        $("#category").val() == "---" &&
+        $("#totaL").val() == "---" &&
+        $("#noBeds").val() == "" &&
+        $("#noBeds2").val() == "" &&
+        $("#rate").val() == "" &&
+        $("#rate2").val() == ""
+      ) {
+        swal(
+          "Oops!",
+          "Please select filter options or enter values for filter!",
+          "warning"
+        );
+      } else {
+        document.getElementById("customers").innerHTML = "";
+        var saveIndex = [];
+        var tableContent = "<tr>";
+        var check = true;
+
+        if ($("#noBeds").val() != "" && $("#noBeds2").val() == "") {
+          check = false;
+          swal(
+            "Validation Error!",
+            "Please enter end range for official beds!",
+            "warning"
+          );
+        } else if ($("#noBeds").val() == "" && $("#noBeds2").val() != "") {
+          check = false;
+          swal(
+            "Validation Error!",
+            "Please enter start range for official beds!",
+            "warning"
+          );
+        } else if (
+          parseInt($("#noBeds").val()) > parseInt($("#noBeds2").val())
+        ) {
+          check = false;
+          swal(
+            "Validation Error!",
+            "Start range greater than end range. Please reenter values for official beds!",
+            "warning"
+          );
+        }
+
+        if ($("#rate").val() != "" && $("#rate2").val() == "") {
+          check = false;
+          swal(
+            "Validation Error!",
+            "Please enter end range for bed usage rate!",
+            "warning"
+          );
+        } else if ($("#rate").val() == "" && $("#rate2").val() != "") {
+          check = false;
+          swal(
+            "Validation Error!",
+            "Please enter start range for bed usage rate!",
+            "warning"
+          );
+        } else if (
+          parseInt($("#rate").val()) > parseInt($("#rate2").val())
+        ) {
+          check = false;
+          swal(
+            "Validation Error!",
+            "Start range greater than end range. Please reenter values for bed usage rate!",
+            "warning"
+          );
+        }
+
+
+        for (var i = 1; i < tRows.length; i++) {
+          validate = true;
+
+          if ($("#state").val() != "---" && validate) {
+            if (tRows[i][1] != $("#state").val()) {
+              validate = false;
+            }
+          }
+          if ($("#category").val() != "---" && validate) {
+            if (tRows[i][2] != $("#category").val()) {
+              validate = false;
+            }
+          }
+          if ($("#totaL").val() != "---" && validate) {
+            if (tRows[i][0] != "Total" && tRows[i][0] != "MALAYSIA") {
+              validate = false;
+            }
+          }
+          if ($("#noBeds").val() != "" && $("#noBeds2").val() != "" && validate) {
+            if (parseInt(tRows[i][3]) < parseInt($("#noBeds").val()) ||
+              parseInt(tRows[i][3]) > parseInt($("#noBeds2").val())
+            ) {
+              validate = false;
+            }
+          }
+          if ($("#rate").val() != "" && $("#rate2").val() != "" && validate) {
+            if (parseInt(tRows[i][7]) < parseInt($("#rate").val()) ||
+              parseInt(tRows[i][7]) > parseInt($("#rate2").val())
+            ) {
+              validate = false;
+            }
+          }
+
+          if (validate) {
+            saveIndex.push(i);
+          }
+        }
+
+        if (saveIndex.length > 0 && check) {
+          for (i in tRows[0]) {
+            tableContent += "<th>" + tRows[0][i] + "</th>";
+          }
+          tableContent += "</tr>";
+          var leg = saveIndex.length;
+          for (var i = 0; i < leg; i++) {
+            tableContent += "<tr>";
+            if (tRows[saveIndex[0]][0] == "Total" || tRows[saveIndex[0]][0] == "MALAYSIA") {
+              for (j in tRows[saveIndex[0]]) {
+                tableContent += "<th>" + tRows[saveIndex[0]][j] + "</th>";
+              }
+            }
+            else {
+              for (j in tRows[saveIndex[0]]) {
+                tableContent += "<td>" + tRows[saveIndex[0]][j] + "</td>";
+              }
+            }
+            saveIndex.shift();
+          }
+          document.getElementById("customers").innerHTML = tableContent;
+
+        } else if (check) {
+          swal("No Data was found!");
+        }
+      }
+    }
+
+    function clearFunction() {
+      $("#state").val('---');
+      $("#category").val('---');
+      $("#totaL").val('---');
+      $("#noBeds").val('');
+      $("#noBeds2").val('');
+      $("#rate").val('');
+      $("#rate2").val('');
+
+    }
+
+    function validateMyForm() {
+      if (document.title == "Teh Tarik | Show Data") {
+        swal("Data already displayed on the web page!");
+        return false;
+      }
+      if (document.getElementById("data_set").files.length == 0) {
+        swal("Error!", "Please choose a file first!", "error");
+        return false;
+      }
+      return true;
+    }
+
+    function searchFunction() {
+      if ($("#search").val() == "") {
+        swal("Oops!", "Please enter hospital name!", "warning");
+      } else {
+        var tableContent = "<tr>";
+
+        for (i in tRows[0]) {
+          tableContent += "<th>" + tRows[0][i] + "</th>";
+        }
+        tableContent += "</tr>";
+        
+        var check = false;
+        for (var i = 1; i < tRows.length; i++) {
+          if (tRows[i][0].toLowerCase().includes($("#search").val().toLowerCase())) {
+            tableContent += "<tr>";
+            check = true;
+            for (j in tRows[i]) {
+              tableContent += "<td>" + tRows[i][j] + "</td>";
+            }
+            tableContent += "</tr>";
+          }
+        }
+        if (check) {
+          document.getElementById("customers").innerHTML = "";
+          document.getElementById("customers").innerHTML = tableContent;
+        } else {
+          swal(
+            "Wrong hospital!",
+            "There is no hospital name as such!",
+            "error"
+          );
+        }
+      }
+    }
+  </script>
+</body>
+</html>
